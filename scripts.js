@@ -1,4 +1,9 @@
 /**
+ * Stores the currently selected task for editing in the modal
+ */
+let activeTask = null;
+
+/**
  * Renders all tasks from initialTasks into their correct columns on the board.
  * Clears existing content first to avoid duplicates.
  */
@@ -7,12 +12,11 @@ function renderTasks() {
   const doingCont = document.getElementById("doing-tasks-container");
   const doneCont = document.getElementById("done-tasks-container");
 
-  // Clear containers
+  // Clear containers before re-rendering
   todoCont.innerHTML = "";
   doingCont.innerHTML = "";
   doneCont.innerHTML = "";
 
-  // Count tasks per status for header updates
   let todoCount = 0;
   let doingCount = 0;
   let doneCount = 0;
@@ -32,42 +36,37 @@ function renderTasks() {
     }
   });
 
-  // Update column headers with live counts
+  // Update column header counts
   document.getElementById("toDoText").textContent = `TODO (${todoCount})`;
   document.getElementById("doingText").textContent = `DOING (${doingCount})`;
   document.getElementById("doneText").textContent = `DONE (${doneCount})`;
 }
 
 /**
- * Creates a single task card element for the board.
- * Attaches a click event listener to open the modal.
+ * Creates a task card element.
  * @param {Object} task - The task object.
- * @param {number} task.id - Unique task ID.
- * @param {string} task.title - The task title.
- * @param {string} task.description - The task description.
- * @param {string} task.status - The task status.
- * @returns {HTMLDivElement} The task card element.
+ * @returns {HTMLDivElement} Task card element.
  */
 function createTaskCard(task) {
   const taskCard = document.createElement("div");
+
   taskCard.classList.add("task-div");
   taskCard.textContent = task.title;
   taskCard.dataset.taskId = task.id;
 
-  // Open modal when task card is clicked
+  // Open modal on click
   taskCard.addEventListener("click", () => openTaskModal(task));
 
   return taskCard;
 }
 
 /**
- * Opens the task modal and populates it with the selected task's details.
- * @param {Object} task - The task to display in the modal.
- * @param {string} task.title - The task title.
- * @param {string} task.description - The task description.
- * @param {string} task.status - The task status.
+ * Opens the modal and populates it with the selected task details.
+ * @param {Object} task
  */
 function openTaskModal(task) {
+  activeTask = task;
+
   document.getElementById("modal-title-input").value = task.title;
   document.getElementById("modal-desc-input").value = task.description;
   document.getElementById("modal-status-select").value = task.status;
@@ -76,47 +75,73 @@ function openTaskModal(task) {
 }
 
 /**
- * Closes the task modal by removing the active class from the backdrop.
+ * Saves edits made in the modal to the active task
+ * and re-renders the board.
+ */
+function saveTaskChanges() {
+  if (!activeTask) return;
+
+  activeTask.title = document.getElementById("modal-title-input").value;
+  activeTask.description =
+    document.getElementById("modal-desc-input").value;
+  activeTask.status =
+    document.getElementById("modal-status-select").value;
+
+  renderTasks();
+}
+
+/**
+ * Closes the task modal.
  */
 function closeTaskModal() {
   document.getElementById("modal-backdrop").classList.remove("active");
 }
 
 /**
- * Attaches all event listeners needed for modal interaction:
- * - Close button click
- * - Backdrop click (clicking outside the modal)
- * - Escape key press
+ * Attaches all modal related event listeners.
  */
 function attachModalEventListeners() {
   const closeBtn = document.getElementById("modal-close-btn");
   const backdrop = document.getElementById("modal-backdrop");
   const modal = document.getElementById("task-modal");
 
+  // Close button
   closeBtn.addEventListener("click", closeTaskModal);
 
-  // Close when clicking outside the modal card
+  // Close when clicking outside modal
   backdrop.addEventListener("click", (event) => {
     if (!modal.contains(event.target)) {
       closeTaskModal();
     }
   });
 
-  // Close on Escape key
+  // Close with Escape key
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       closeTaskModal();
     }
   });
+
+  // Save edits automatically
+  document
+    .getElementById("modal-title-input")
+    .addEventListener("input", saveTaskChanges);
+
+  document
+    .getElementById("modal-desc-input")
+    .addEventListener("input", saveTaskChanges);
+
+  document
+    .getElementById("modal-status-select")
+    .addEventListener("change", saveTaskChanges);
 }
 
 /**
- * Initialises the board by rendering tasks and setting up modal event listeners.
+ * Initializes the board.
  */
 function init() {
   renderTasks();
   attachModalEventListeners();
 }
 
-// Run on DOM ready
 document.addEventListener("DOMContentLoaded", init);
