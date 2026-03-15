@@ -3,7 +3,12 @@
 
 ## Project Description
 
-A dynamic Kanban task board built with vanilla HTML, CSS, and JavaScript. Tasks are loaded from a JavaScript data file and rendered into the correct board columns based on their status. Clicking a task card opens a modal displaying the task's title, description, and current status. No task content is hardcoded in the HTML.
+This project is a Kanban-style task board built using HTML, CSS, and JavaScript.
+The board displays tasks in three workflow columns: To Do, Doing, and Done.
+
+Tasks are stored in a JavaScript data file (initialData.js) and are rendered dynamically when the page loads. Clicking on a task opens a modal that shows more details about that task.
+
+The purpose of this project was to practice DOM manipulation, event handling, and dynamic rendering using JavaScript.
 
 ---
 
@@ -48,3 +53,8 @@ A dynamic Kanban task board built with vanilla HTML, CSS, and JavaScript. Tasks 
 | Click the × button | Modal closes |
 | Click outside the modal | Modal closes |
 | Press Escape | Modal closes |
+
+This project was completed as part of the Dynamic Task Display & Modal View assessment.
+
+Author
+Lebogang Mokoena
