@@ -57,4 +57,5 @@ The purpose of this project was to practice DOM manipulation, event handling, an
 This project was completed as part of the Dynamic Task Display & Modal View assessment.
 
 Author
+
 Lebogang Mokoena
